@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RUserMgmt", "RUserMgmt\RUserMgmt.csproj", "{09C6FFAB-A1DA-4090-A724-2648722E98DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{09C6FFAB-A1DA-4090-A724-2648722E98DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09C6FFAB-A1DA-4090-A724-2648722E98DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09C6FFAB-A1DA-4090-A724-2648722E98DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09C6FFAB-A1DA-4090-A724-2648722E98DA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E38AB42A-B613-4422-A857-D7DC16087472}
+	EndGlobalSection
+EndGlobal
