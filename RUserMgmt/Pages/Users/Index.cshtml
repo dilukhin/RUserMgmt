@@ -1,11 +1,11 @@
-﻿@page
+﻿@page "{id:int?}"
 @model RUserMgmt.Pages.Users.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Users";
 }
 
-<h1>Index</h1>
+<h1>Users</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,41 +14,82 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.User[0].LoginName)
+                Login
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User[0].FullName)
+                Full Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User[0].Email)
+                Email
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User[0].Password)
+                Password
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.User) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LoginName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.UserId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.UserId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.UserId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.UserData.Users)
+        {
+            string selectedRow = "";
+            if (item.UserId == Model.UserID)
+            {
+                selectedRow = "table-success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @Html.DisplayFor(modelItem => item.LoginName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Password)
+                </td>
+                <td>
+                    @{
+                        foreach (var role in item.UsersRoles)
+                        {
+                            @role.Role.RoleId @:  @role.Role.Name<br />
+                        }
+                    }
+                </td>
+                <td>
+                    <a asp-page="./Index" asp-route-id="@item.UserId">Select</a> |
+                    <a asp-page="./Edit" asp-route-id="@item.UserId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.UserId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@if (Model.UserData.Roles!= null)
+{
+    <h3>Roles assigned to selected user</h3>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Name</th>
+        </tr>
+
+        @foreach (var item in Model.UserData.Roles)
+        {
+            string selectedRow = "";
+            if (item.RoleId == Model.RoleID)
+            {
+                selectedRow = "table-success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @item.Name
+                </td>
+            </tr>
+        }
+
+    </table>
+}
