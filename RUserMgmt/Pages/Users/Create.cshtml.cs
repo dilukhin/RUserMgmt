@@ -10,7 +10,7 @@ using RazorUserMgmt.Models;
 
 namespace RUserMgmt.Pages.Users
 {
-    public class CreateModel : PageModel
+    public class CreateModel : UserRolesPageModel
     {
         private readonly RUserMgmt.Data.RUserMgmtContext _context;
 
@@ -21,25 +21,47 @@ namespace RUserMgmt.Pages.Users
 
         public IActionResult OnGet()
         {
+            var instructor = new User();
+            instructor.UsersRoles = new List<UsersRoles>();
+
+            // Provides an empty collection for the foreach loop
+            // foreach (var course in Model.AssignedRoleDataList)
+            // in the Create Razor page.
+            PopulateAssignedRoleData(_context, instructor);
             return Page();
         }
 
         [BindProperty]
         public User User { get; set; }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string[] selectedRoles)
         {
-            if (!ModelState.IsValid)
+            var newUser = new User();
+            if (selectedRoles != null)
             {
-                return Page();
+                newUser.UsersRoles = new List<UsersRoles>();
+                foreach (var course in selectedRoles)
+                {
+                    var courseToAdd = new UsersRoles
+                    {
+                        RoleId = int.Parse(course)
+                    };
+                    newUser.UsersRoles.Add(courseToAdd);
+                }
             }
 
-            _context.Users.Add(User);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            if (await TryUpdateModelAsync<User>(
+                newUser,
+                "User",
+                i => i.LoginName, i => i.FullName,
+                i => i.Email, i => i.Password))
+            {
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
+            PopulateAssignedRoleData(_context, newUser);
+            return Page();
         }
     }
 }

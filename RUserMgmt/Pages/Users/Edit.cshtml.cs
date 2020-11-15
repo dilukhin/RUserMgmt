@@ -11,7 +11,7 @@ using RazorUserMgmt.Models;
 
 namespace RUserMgmt.Pages.Users
 {
-    public class EditModel : PageModel
+    public class EditModel : UserRolesPageModel
     {
         private readonly RUserMgmt.Data.RUserMgmtContext _context;
 
@@ -30,45 +30,52 @@ namespace RUserMgmt.Pages.Users
                 return NotFound();
             }
 
-            User = await _context.Users.FirstOrDefaultAsync(m => m.UserId == id);
+            User = await _context.Users
+                .Include(i => i.UsersRoles).ThenInclude(i => i.Role)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.UserId == id);
 
             if (User == null)
             {
                 return NotFound();
             }
+            PopulateAssignedRoleData(_context, User);
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedRoles)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(User).State = EntityState.Modified;
+            var userToUpdate = await _context.Users
+                .Include(i => i.UsersRoles)
+                    .ThenInclude(i => i.Role)
+                .FirstOrDefaultAsync(s => s.UserId == id);
 
-            try
+            if (userToUpdate == null)
             {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<User>(
+                userToUpdate,
+                "User",
+                i => i.LoginName, i => i.FullName,
+                i => i.Email, i => i.Password))
+            {
+                UpdateUserRoles(_context, selectedRoles, userToUpdate);
                 await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(User.UserId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return RedirectToPage("./Index");
+            UpdateUserRoles(_context, selectedRoles, userToUpdate);
+            PopulateAssignedRoleData(_context, userToUpdate);
+            return Page();
         }
-
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.UserId == id);

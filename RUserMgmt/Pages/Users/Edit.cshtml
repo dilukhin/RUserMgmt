@@ -35,9 +35,35 @@
                 <span asp-validation-for="User.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+
+                                foreach (var role in Model.AssignedRoleDataList)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedRoles"
+                                               value="@role.RoleId"
+                                               @(Html.Raw(role.Assigned ? "checked=\"checked\"" : "")) />
+                                        @role.RoleId@:  @role.Name
+                                    @:</td>
+                                }
+                            @:</tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
     </div>
 </div>
 
