@@ -45,13 +45,18 @@ namespace RUserMgmt.Pages.Users
                 return NotFound();
             }
 
-            User = await _context.Users.FindAsync(id);
+            User user = await _context.Users
+                .Include(i => i.UsersRoles)
+                .SingleAsync(i => i.UserId == id);
 
-            if (User != null)
+            if (user == null)
             {
-                _context.Users.Remove(User);
-                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
+
+            _context.Users.Remove(user);
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }
