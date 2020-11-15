@@ -6,10 +6,6 @@
 }
 
 <h1>Index</h1>
-
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -26,9 +22,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.RoleId">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.RoleId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.RoleId">Delete</a>
             </td>
         </tr>
 }
